@@ -92,7 +92,7 @@ const Login = () => {
           />
         </div>
         {error && <p className="login-alert">Credenciales incorrectas, por favor intente de nuevo.</p>}
-        <button type="submit" onClick={login}>Iniciar Sesión</button>
+        <button className="login-button" type="submit" onClick={login}>Iniciar Sesión</button>
       </form>
     </div>
   );

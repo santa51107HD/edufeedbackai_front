@@ -2,6 +2,9 @@ import React, { useContext, useState } from 'react';
 import { Context } from '../../context/context';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../loadingSpinner/loadingSpinner';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { IconButton } from '@mui/material';
+import './logout.css'
 
 const Logout = () => {
   const { setAppState } = useContext(Context);
@@ -24,7 +27,9 @@ const Logout = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      <button onClick={handleLogout}>Cerrar Sesión</button>
+      <IconButton onClick={handleLogout} className="logout-button">
+        <ExitToAppIcon />
+      </IconButton>
     </>
     
   );
