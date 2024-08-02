@@ -1,12 +1,88 @@
-.home{
+.home {
+  color: aliceblue;
+  padding: 20px;
+}
+
+.filters-container {
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 10px;
+  background-color: #000000;
+  flex-wrap: wrap;
+}
+
+.text-field-custom {
+  background-color: #000000;
+}
+
+/* Titulo del filtro*/
+.text-field-custom .MuiInputLabel-root {
+  color: aliceblue;
+
+  &.Mui-focused {
     color: aliceblue;
-    padding: 20px;
+  }
+}
+
+/* Cambiar el color del icono de la x del select */
+.text-field-custom .MuiAutocomplete-clearIndicator {
+  color: aliceblue;
+}
+
+/* Cambiar el color del icono de flecha del select */
+.text-field-custom .MuiAutocomplete-popupIndicator {
+  color: aliceblue;
+}
+
+.text-field-custom .MuiOutlinedInput-root {
+  color: aliceblue;
+
+  fieldset {
+    border-color: aliceblue;
+  }
+
+  &:hover fieldset {
+    border-color: gray;
+  }
+
+  &.Mui-focused fieldset {
+    border-color: #ff0000;
+  }
+
+}
+
+.reset-button {
+  color: aliceblue;
+}
+
+.reset-button:hover {
+  color: grey;
 }
 
 .comments-container {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 20px;
-  }
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  padding-bottom: 10px;
+}
+
+/* Personalizar numeros de paginacion */
+.pagination-custom .MuiPaginationItem-root {
+  color: aliceblue;
+}
+
+.pagination-custom .MuiPaginationItem-page.Mui-selected {
+  background-color: aliceblue;
+  color: black;
+}

@@ -1,8 +1,10 @@
 .comment-card {
     color: aliceblue;
-    border: 1px solid #ff0000;
+    border: 1px solid aliceblue;
     border-radius: 5px;
     padding: 15px;
-    margin: 10px 0;
+    font-size: large;
+    width: 30%;
+    min-width: 300px;
   }
   

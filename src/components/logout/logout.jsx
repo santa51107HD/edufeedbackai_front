@@ -27,8 +27,8 @@ const Logout = () => {
   return (
     <>
       {loading && <LoadingSpinner />}
-      <IconButton onClick={handleLogout} className="logout-button">
-        <ExitToAppIcon />
+      <IconButton onClick={handleLogout}>
+        <ExitToAppIcon className="logout-button"/>
       </IconButton>
     </>
     
