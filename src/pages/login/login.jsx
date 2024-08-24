@@ -72,7 +72,7 @@ const Login = () => {
         <h1>EduFeedbackAI</h1>
         <h2>Inicio de Sesión</h2>
         <div className="input-group">
-          <label htmlFor="code">Código:</label>
+          <label htmlFor="code">Usuario:</label>
           <input
             type="text"
             id="code"

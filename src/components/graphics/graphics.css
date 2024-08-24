@@ -1,0 +1,17 @@
+/* graphics.css */
+.graphics-container {
+  overflow-x: auto; /* Habilitar el scroll horizontal */
+  min-width: 300px; /* Tamaño mínimo para el contenedor */
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.graphics-title{
+  display: flex;
+  justify-content: center;
+}
+
+.barchart-custom {
+  min-width: 600px;
+}

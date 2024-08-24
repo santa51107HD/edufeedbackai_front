@@ -22,8 +22,8 @@ const CommentCard = ({ comentario, docente, materia, grupo, semestre, anho }) =>
   return (
     <div className="comment-card" style={{ backgroundColor: getBackgroundColor(sentimiento) }}>
       <p><strong>Comentario:</strong> {texto}</p>
-      <p><strong>Calificación:</strong> {calificacion}</p>
-      <p><strong>Código Docente:</strong> {docente.usuario}</p>
+      {/* <p><strong>Calificación:</strong> {calificacion}</p> */}
+      <p><strong>Usuario:</strong> {docente.usuario}</p>
       {(appState.typeUser === 'daca' || appState.typeUser === 'director_programa') && (
       <p><strong>Género Docente:</strong> {docente.genero}</p>
         )}
