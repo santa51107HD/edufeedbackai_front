@@ -3,51 +3,94 @@ import Rating from "@mui/material/Rating";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import "./commentsSummary.css";
 
-const CommentsSummary = ({ comments }) => {
+const CommentsSummary = ({ comments, typeUser }) => {
   const totalComments = comments.length;
-  const positiveComments = comments.filter(
-    (comment) => comment.comentario.sentimiento === "POS"
-  ).length;
-  const neutralComments = comments.filter(
-    (comment) => comment.comentario.sentimiento === "NEU"
-  ).length;
-  const negativeComments = comments.filter(
-    (comment) => comment.comentario.sentimiento === "NEG"
-  ).length;
 
-  // Calcular promedio de calificaciones
-  const averageRating =
-    comments.reduce(
-      (sum, comment) => sum + comment.comentario.calificacion,
-      0
-    ) / totalComments;
+  // Filtrar comentarios por género
+  const maleComments = comments.filter(
+    (comment) => comment.docente.genero === "male"
+  );
+  const femaleComments = comments.filter(
+    (comment) => comment.docente.genero === "female"
+  );
 
-  // Determinar la clase CSS según el valor de averageRating
-  const ratingClass =
-    averageRating >= 4
+  // Filtrar comentarios por sentimiento
+  const countSentiments = (filteredComments) => {
+    const positive = filteredComments.filter(
+      (comment) => comment.comentario.sentimiento === "POS"
+    ).length;
+    const neutral = filteredComments.filter(
+      (comment) => comment.comentario.sentimiento === "NEU"
+    ).length;
+    const negative = filteredComments.filter(
+      (comment) => comment.comentario.sentimiento === "NEG"
+    ).length;
+
+    return { positive, neutral, negative };
+  };
+
+  // Calcular promedio de calificación
+  const calculateAverageRating = (filteredComments) => {
+    if (filteredComments.length === 0) return 0;
+    return (
+      filteredComments.reduce(
+        (sum, comment) => sum + comment.comentario.calificacion,
+        0
+      ) / filteredComments.length
+    );
+  };
+
+  // Obtener datos para gráficos y calificación
+  const totalSentiments = countSentiments(comments);
+  const maleSentiments = countSentiments(maleComments);
+  const femaleSentiments = countSentiments(femaleComments);
+
+  const averageRating = calculateAverageRating(comments);
+  const averageMaleRating = calculateAverageRating(maleComments);
+  const averageFemaleRating = calculateAverageRating(femaleComments);
+
+  // Ordenar los comentarios por calificación de manera descendente y ascendente
+  const sortedCommentsDescending = [...comments].sort(
+    (a, b) => b.comentario.calificacion - a.comentario.calificacion
+  );
+  const sortedCommentsAscending = [...comments].sort(
+    (a, b) => a.comentario.calificacion - b.comentario.calificacion
+  );
+
+  // Filtrar los 5 mejores y 5 peores comentarios
+  const bestComments = sortedCommentsDescending.slice(0, 5);
+  const worstComments = sortedCommentsAscending.slice(0, 5);
+
+  // Determinar la clase CSS según el valor del rating
+  const getRatingClass = (rating) =>
+    rating >= 4
       ? "positive-comments"
-      : averageRating >= 3
+      : rating >= 3
       ? "neutral-comments"
       : "negative-comments";
 
   // Datos para el PieChart
-  const data = [
+  const createPieData = ({ positive, neutral, negative }) => [
     {
       label: "Positivos",
-      value: positiveComments,
-      percentage: ((positiveComments / totalComments) * 100).toFixed(1) + "%",
+      value: positive,
+      percentage: ((positive / totalComments) * 100).toFixed(1) + "%",
     },
     {
       label: "Neutrales",
-      value: neutralComments,
-      percentage: ((neutralComments / totalComments) * 100).toFixed(1) + "%",
+      value: neutral,
+      percentage: ((neutral / totalComments) * 100).toFixed(1) + "%",
     },
     {
       label: "Negativos",
-      value: negativeComments,
-      percentage: ((negativeComments / totalComments) * 100).toFixed(1) + "%",
+      value: negative,
+      percentage: ((negative / totalComments) * 100).toFixed(1) + "%",
     },
   ];
+
+  const totalData = createPieData(totalSentiments);
+  const maleData = createPieData(maleSentiments);
+  const femaleData = createPieData(femaleSentiments);
 
   // Colores correspondientes para cada segmento del gráfico
   const palette = ["#00545f", "#313131", "#5c1313"];
@@ -55,28 +98,28 @@ const CommentsSummary = ({ comments }) => {
   return (
     <div className="comments-summary">
       <div className="first-comments-summary">
-        <div className="comments-card-summary total-comments">
+        <div className="value-card-summary total-comments">
           <div className="total-value">
             <h2>{totalComments}</h2>
           </div>
           <div>Comentarios</div>
           <div>Totales</div>
         </div>
-        <div className="comments-card-summary positive-comments">
+        <div className="value-card-summary positive-comments">
           <div className="total-value">
-            <h2>{positiveComments}</h2>
+            <h2>{totalSentiments.positive}</h2>
           </div>
           <div>Positivos</div>
         </div>
-        <div className="comments-card-summary neutral-comments">
+        <div className="value-card-summary neutral-comments">
           <div className="total-value">
-            <h2>{neutralComments}</h2>
+            <h2>{totalSentiments.neutral}</h2>
           </div>
           <div>Neutrales</div>
         </div>
-        <div className="comments-card-summary negative-comments">
+        <div className="value-card-summary negative-comments">
           <div className="total-value">
-            <h2>{negativeComments}</h2>
+            <h2>{totalSentiments.negative}</h2>
           </div>
           <div>Negativos</div>
         </div>
@@ -98,13 +141,13 @@ const CommentsSummary = ({ comments }) => {
               {
                 arcLabel: (item) => `${item.percentage}`,
                 arcLabelMinAngle: 45,
-                data,
+                data: totalData,
               },
             ]}
             sx={{
               [`& .${pieArcLabelClasses.root}`]: {
-                fill: 'white',
-                fontWeight: 'bold',
+                fill: "white",
+                fontWeight: "bold",
               },
             }}
             colors={palette}
@@ -112,7 +155,7 @@ const CommentsSummary = ({ comments }) => {
             height={200}
           />
         </div>
-        <div className={`rating-card ${ratingClass}`}>
+        <div className={`rating-card ${getRatingClass(averageRating)}`}>
           <div>Promedio de Calificación</div>
           <div className="total-value">
             <h2>{averageRating.toFixed(1)}</h2>
@@ -125,6 +168,147 @@ const CommentsSummary = ({ comments }) => {
               readOnly
             />
           </div>
+        </div>
+      </div>
+      {(typeUser === "daca" ||
+        typeUser === "director_programa") && (
+        <>
+          <div className="gender-title-summary">
+            <h2>Estadísticas por Género</h2>
+          </div>
+          <div className="gender-stadistics-container">
+            <div className="male-stadistics-container">
+              <div className="gender-subtitle-summary">
+                <h3>Hombres</h3>
+              </div>
+              <div className="second-comments-summary">
+                {/* Gráfico de pastel y tarjeta de calificación para docentes hombres */}
+                <div className="pie-chart-container">
+                  <div>Porcentaje por Polaridad</div>
+                  <PieChart
+                    series={[
+                      {
+                        arcLabel: (item) => `${item.percentage}`,
+                        arcLabelMinAngle: 45,
+                        data: maleData,
+                      },
+                    ]}
+                    sx={{
+                      [`& .${pieArcLabelClasses.root}`]: {
+                        fill: "white",
+                        fontWeight: "bold",
+                      },
+                    }}
+                    colors={palette}
+                    width={340}
+                    height={200}
+                  />
+                </div>
+                <div
+                  className={`rating-card ${getRatingClass(averageMaleRating)}`}
+                >
+                  <div>Promedio de Calificación</div>
+                  <div className="total-value">
+                    <h2>{averageMaleRating.toFixed(1)}</h2>
+                  </div>
+                  <div>
+                    <Rating
+                      name="average-male-rating"
+                      value={averageMaleRating}
+                      precision={0.1}
+                      readOnly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="female-stadistics-container">
+              <div className="gender-subtitle-summary">
+                <h3>Mujeres</h3>
+              </div>
+              <div className="second-comments-summary">
+                {/* Gráfico de pastel y tarjeta de calificación para docentes mujeres */}
+                <div className="pie-chart-container">
+                  <div>Porcentaje por Polaridad</div>
+                  <PieChart
+                    series={[
+                      {
+                        arcLabel: (item) => `${item.percentage}`,
+                        arcLabelMinAngle: 45,
+                        data: femaleData,
+                      },
+                    ]}
+                    sx={{
+                      [`& .${pieArcLabelClasses.root}`]: {
+                        fill: "white",
+                        fontWeight: "bold",
+                      },
+                    }}
+                    colors={palette}
+                    width={340}
+                    height={200}
+                  />
+                </div>
+                <div
+                  className={`rating-card ${getRatingClass(
+                    averageFemaleRating
+                  )}`}
+                >
+                  <div>Promedio de Calificación</div>
+                  <div className="total-value">
+                    <h2>{averageFemaleRating.toFixed(1)}</h2>
+                  </div>
+                  <div>
+                    <Rating
+                      name="average-female-rating"
+                      value={averageFemaleRating}
+                      precision={0.1}
+                      readOnly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+      <div className="third-comments-summary">
+        {/* Mostrar los 5 mejores comentarios */}
+        <div className="comments-list-summary">
+          <h2 className="title-summary">Mejores Comentarios</h2>
+          {bestComments.length > 0 ? (
+            bestComments.map((comment, index) => (
+              <div key={index} className="comment-card-summary best-comment">
+                <p>{comment.comentario.comentario}</p>
+                <Rating
+                  name={`best-rating-${index}`}
+                  value={comment.comentario.calificacion}
+                  readOnly
+                />
+              </div>
+            ))
+          ) : (
+            <p>No hay comentarios positivos</p>
+          )}
+        </div>
+
+        {/* Mostrar los 5 peores comentarios */}
+        <div className="comments-list-summary">
+          <h2 className="title-summary">Peores Comentarios</h2>
+          {worstComments.length > 0 ? (
+            worstComments.map((comment, index) => (
+              <div key={index} className="comment-card-summary worst-comment">
+                <p>{comment.comentario.comentario}</p>
+                <Rating
+                  name={`worst-rating-${index}`}
+                  value={comment.comentario.calificacion}
+                  readOnly
+                />
+              </div>
+            ))
+          ) : (
+            <p>No hay comentarios negativos</p>
+          )}
         </div>
       </div>
     </div>

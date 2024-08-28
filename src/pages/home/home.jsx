@@ -15,6 +15,8 @@ const Home = () => {
   const [currentTab, setCurrentTab] = useState(0);
 
   useEffect(() => {
+    if (!appState.token) return;
+  
     const fetchComments = async () => {
       try {
         const response = await fetch(
@@ -27,13 +29,13 @@ const Home = () => {
         );
         const data = await response.json();
         setComments(data);
-        setLoading(false);
       } catch (error) {
         console.error("Error fetching comments:", error);
+      } finally {
         setLoading(false);
       }
     };
-
+  
     fetchComments();
   }, [appState.token]);
 
@@ -69,7 +71,7 @@ const Home = () => {
         </div>
         <div>
           {currentTab === 0 && (
-            <CommentsSummary comments={comments} />
+            <CommentsSummary comments={comments} typeUser={appState.typeUser}/>
           )}
           {currentTab === 1 && (
             <Graphics comments={comments} />

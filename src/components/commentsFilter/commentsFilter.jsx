@@ -155,7 +155,7 @@ const CommentsFilter = ({ comments, typeUser }) => {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Código Docente"
+                  label="Docente"
                   variant="outlined"
                   className="text-field-custom"
                 />
