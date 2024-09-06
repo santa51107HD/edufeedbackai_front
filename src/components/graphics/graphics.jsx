@@ -1,34 +1,75 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import "./graphics.css";
 
-const Graphics = ({ comments }) => {
-  // Agrupar comentarios por semestre
-  const groupedData = comments.reduce((acc, comment) => {
-    const { sentimiento } = comment.comentario; // Acceder al sentimiento dentro de comentario
-    const { semestre } = comment; // Acceder al semestre directamente
+const Graphics = ({ comments, appState }) => {
+  const [chartData, setChartData] = useState({
+    labels: [],
+    positiveSeries: [],
+    neutralSeries: [],
+    negativeSeries: [],
+  });
+  const [generatedText, setGeneratedText] = useState("");
 
-    //Se verifica si ya existe una entrada para ese semestre en acc. Si no existe, se crea un nuevo objeto con contadores
-    if (!acc[semestre]) {
-      acc[semestre] = { positive: 0, neutral: 0, negative: 0 };
-    }
+  useEffect(() => {
+    if (!appState.token || comments.length === 0) return;
 
-    if (sentimiento === "POS") {
-      acc[semestre].positive += 1;
-    } else if (sentimiento === "NEU") {
-      acc[semestre].neutral += 1;
-    } else if (sentimiento === "NEG") {
-      acc[semestre].negative += 1;
-    }
+    // Procesamiento de los datos
+    const groupedData = comments.reduce((acc, comment) => {
+      const { sentimiento } = comment.comentario;
+      const { semestre } = comment;
 
-    return acc;
-  }, {});
+      if (!acc[semestre]) {
+        acc[semestre] = { positive: 0, neutral: 0, negative: 0 };
+      }
 
-  // Preparar los datos para el gráfico de barras
-  const labels = Object.keys(groupedData).sort();
-  const positiveSeries = labels.map((label) => groupedData[label].positive);
-  const neutralSeries = labels.map((label) => groupedData[label].neutral);
-  const negativeSeries = labels.map((label) => groupedData[label].negative);
+      if (sentimiento === "POS") {
+        acc[semestre].positive += 1;
+      } else if (sentimiento === "NEU") {
+        acc[semestre].neutral += 1;
+      } else if (sentimiento === "NEG") {
+        acc[semestre].negative += 1;
+      }
+
+      return acc;
+    }, {});
+
+    // Preparar los datos para el gráfico de barras
+    const labels = Object.keys(groupedData).sort();
+    const positiveSeries = labels.map((label) => groupedData[label].positive);
+    const neutralSeries = labels.map((label) => groupedData[label].neutral);
+    const negativeSeries = labels.map((label) => groupedData[label].negative);
+
+    // Actualizar el estado con los datos del gráfico
+    setChartData({ labels, positiveSeries, neutralSeries, negativeSeries });
+
+    // Enviar datos procesados al backend
+    const sendCommentsToBackend = async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/analizar/comentarios/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: appState.token,
+            },
+            body: JSON.stringify(groupedData),
+          }
+        );
+
+        const data = await response.json();
+        console.log(data.texto_generado);
+        setGeneratedText(data.texto_generado);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    };
+
+    sendCommentsToBackend();
+  }, []);
+
+  // console.log(groupedData);
 
   return (
     <div className="graphics-container">
@@ -39,24 +80,24 @@ const Graphics = ({ comments }) => {
         <BarChart
           xAxis={[
             {
-              data: labels,
+              data: chartData.labels,
               label: "Semestre",
               scaleType: "band", // Asegurar que el eje X use escala de bandas
             },
           ]}
           series={[
             {
-              data: positiveSeries,
+              data: chartData.positiveSeries,
               label: "Positivos",
               color: "rgba(75, 192, 192, 0.6)",
             },
             {
-              data: neutralSeries,
+              data: chartData.neutralSeries,
               label: "Neutrales",
               color: "rgba(153, 102, 255, 0.6)",
             },
             {
-              data: negativeSeries,
+              data: chartData.negativeSeries,
               label: "Negativos",
               color: "rgba(255, 99, 132, 0.6)",
             },
@@ -65,6 +106,12 @@ const Graphics = ({ comments }) => {
           className="barchart-custom"
         />
       </div>
+      {generatedText && (
+        <div className="generated-text">
+          <h3>Opinión de la IA</h3>
+          <p>{generatedText}</p>
+        </div>
+      )}
     </div>
   );
 };

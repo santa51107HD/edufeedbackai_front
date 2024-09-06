@@ -74,7 +74,7 @@ const Home = () => {
             <CommentsSummary comments={comments} typeUser={appState.typeUser}/>
           )}
           {currentTab === 1 && (
-            <Graphics comments={comments} />
+            <Graphics comments={comments} appState={appState}/>
           )}
           {currentTab === 2 && (
             <CommentsFilter comments={comments} typeUser={appState.typeUser} />

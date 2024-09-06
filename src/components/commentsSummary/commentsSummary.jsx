@@ -70,27 +70,27 @@ const CommentsSummary = ({ comments, typeUser }) => {
       : "negative-comments";
 
   // Datos para el PieChart
-  const createPieData = ({ positive, neutral, negative }) => [
+  const createPieData = ({ positive, neutral, negative }, total) => [
     {
       label: "Positivos",
       value: positive,
-      percentage: ((positive / totalComments) * 100).toFixed(1) + "%",
+      percentage: ((positive / total) * 100).toFixed(1) + "%",
     },
     {
       label: "Neutrales",
       value: neutral,
-      percentage: ((neutral / totalComments) * 100).toFixed(1) + "%",
+      percentage: ((neutral / total) * 100).toFixed(1) + "%",
     },
     {
       label: "Negativos",
       value: negative,
-      percentage: ((negative / totalComments) * 100).toFixed(1) + "%",
+      percentage: ((negative / total) * 100).toFixed(1) + "%",
     },
   ];
 
-  const totalData = createPieData(totalSentiments);
-  const maleData = createPieData(maleSentiments);
-  const femaleData = createPieData(femaleSentiments);
+  const totalData = createPieData(totalSentiments, totalComments);
+  const maleData = createPieData(maleSentiments, maleComments.length);
+  const femaleData = createPieData(femaleSentiments, femaleComments.length);
 
   // Colores correspondientes para cada segmento del gráfico
   const palette = ["#00545f", "#313131", "#5c1313"];

@@ -15,3 +15,11 @@
 .barchart-custom {
   min-width: 600px;
 }
+
+.generated-text{
+  background-color: #00545f;
+  color: aliceblue;
+  margin: 20px;
+  padding: 20px;
+  border-radius: 5px;
+}

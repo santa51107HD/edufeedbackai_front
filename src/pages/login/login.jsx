@@ -14,10 +14,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (appState.loggedIn) {
-      navigate('/'); // Redirige a la pagina principal si el usuario ya esta logeado
+    if (appState.loggedIn && window.location.pathname !== '/') {// Evitar que se redirija infinitamente si esta logeado
+      navigate('/'); // Redirige a la página principal solo si no estás ya en ella
     }
-  }, [appState, navigate]);
+  }, [appState.loggedIn, navigate]);
 
   const consultaUsuarioBD = async (datos) => {
     const data = await fetch("http://127.0.0.1:8000/login/", datos);
