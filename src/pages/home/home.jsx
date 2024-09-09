@@ -3,9 +3,10 @@ import { Context } from "../../context/context";
 import Header from "../../components/header/header";
 import CommentsFilter from "../../components/commentsFilter/commentsFilter";
 import LoadingSpinner from "../../components/loadingSpinner/loadingSpinner";
-import { Tabs, Tab, Typography} from "@mui/material";
+import { Tabs, Tab, Typography } from "@mui/material";
 import Graphics from "../../components/graphics/graphics";
 import CommentsSummary from "../../components/commentsSummary/commentsSummary";
+import UpdateData from "../../components/updateData/updateData";
 import "./home.css";
 
 const Home = () => {
@@ -16,7 +17,7 @@ const Home = () => {
 
   useEffect(() => {
     if (!appState.token) return;
-  
+
     const fetchComments = async () => {
       try {
         const response = await fetch(
@@ -35,7 +36,7 @@ const Home = () => {
         setLoading(false);
       }
     };
-  
+
     fetchComments();
   }, [appState.token]);
 
@@ -63,22 +64,24 @@ const Home = () => {
             variant="scrollable"
             scrollButtons
             allowScrollButtonsMobile
-          > 
+          >
             <Tab label="Resumen" />
             <Tab label="Gráficas" />
             <Tab label="Comentarios" />
+            {appState.typeUser === "daca" && <Tab label="Cargar Datos" />}
           </Tabs>
         </div>
         <div>
           {currentTab === 0 && (
-            <CommentsSummary comments={comments} typeUser={appState.typeUser}/>
+            <CommentsSummary comments={comments} typeUser={appState.typeUser} />
           )}
           {currentTab === 1 && (
-            <Graphics comments={comments} appState={appState}/>
+            <Graphics comments={comments} appState={appState} />
           )}
           {currentTab === 2 && (
             <CommentsFilter comments={comments} typeUser={appState.typeUser} />
           )}
+          {currentTab === 3 && <UpdateData />}
         </div>
       </div>
     </div>
