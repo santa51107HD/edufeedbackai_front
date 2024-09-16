@@ -1,75 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { TagCloud } from "react-tagcloud";
 import "./graphics.css";
 
-const Graphics = ({ comments, appState }) => {
-  const [chartData, setChartData] = useState({
-    labels: [],
-    positiveSeries: [],
-    neutralSeries: [],
-    negativeSeries: [],
-  });
-  const [generatedText, setGeneratedText] = useState("");
+const Graphics = ({ chartData, generatedText, tfidfData }) => {
 
-  useEffect(() => {
-    if (!appState.token || comments.length === 0) return;
-
-    // Procesamiento de los datos
-    const groupedData = comments.reduce((acc, comment) => {
-      const { sentimiento } = comment.comentario;
-      const { semestre } = comment;
-
-      if (!acc[semestre]) {
-        acc[semestre] = { positive: 0, neutral: 0, negative: 0 };
-      }
-
-      if (sentimiento === "POS") {
-        acc[semestre].positive += 1;
-      } else if (sentimiento === "NEU") {
-        acc[semestre].neutral += 1;
-      } else if (sentimiento === "NEG") {
-        acc[semestre].negative += 1;
-      }
-
-      return acc;
-    }, {});
-
-    // Preparar los datos para el gráfico de barras
-    const labels = Object.keys(groupedData).sort();
-    const positiveSeries = labels.map((label) => groupedData[label].positive);
-    const neutralSeries = labels.map((label) => groupedData[label].neutral);
-    const negativeSeries = labels.map((label) => groupedData[label].negative);
-
-    // Actualizar el estado con los datos del gráfico
-    setChartData({ labels, positiveSeries, neutralSeries, negativeSeries });
-
-    // Enviar datos procesados al backend
-    const sendCommentsToBackend = async () => {
-      try {
-        const response = await fetch(
-          "http://127.0.0.1:8000/analizar/comentarios/",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: appState.token,
-            },
-            body: JSON.stringify(groupedData),
-          }
-        );
-
-        const data = await response.json();
-        console.log(data.texto_generado);
-        setGeneratedText(data.texto_generado);
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
-
-    sendCommentsToBackend();
-  }, []);
-
-  // console.log(groupedData);
+  const options = {
+    luminosity: "dark",
+    hue: "blue",
+  };
 
   return (
     <div className="graphics-container">
@@ -112,6 +51,19 @@ const Graphics = ({ comments, appState }) => {
           <p>{generatedText}</p>
         </div>
       )}
+      <div className="cloud-container">
+        <div>
+          <h2>Nube de Palabras</h2>
+        </div>
+        <div className="word-cloud">
+          <TagCloud
+            minSize={16}
+            maxSize={50}
+            tags={tfidfData}
+            colorOptions={options}
+          />
+        </div>
+      </div>
     </div>
   );
 };
