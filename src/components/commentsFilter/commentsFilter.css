@@ -80,3 +80,8 @@
   background-color: black;
   color: aliceblue;
 }
+
+.none-commentsfilter {
+  display: flex;
+  justify-content: center;
+}

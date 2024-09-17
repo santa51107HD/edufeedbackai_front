@@ -4,18 +4,17 @@ import { TagCloud } from "react-tagcloud";
 import "./graphics.css";
 
 const Graphics = ({ chartData, generatedText, tfidfData }) => {
-
   const options = {
     luminosity: "dark",
     hue: "blue",
   };
 
   return (
-    <div className="graphics-container">
+    <div>
       <div className="graphics-title">
         <h2>Comentarios por Semestre</h2>
       </div>
-      <div>
+      <div className="barchart-container">
         <BarChart
           xAxis={[
             {
@@ -55,14 +54,18 @@ const Graphics = ({ chartData, generatedText, tfidfData }) => {
         <div>
           <h2>Nube de Palabras</h2>
         </div>
-        <div className="word-cloud">
-          <TagCloud
-            minSize={16}
-            maxSize={50}
-            tags={tfidfData}
-            colorOptions={options}
-          />
-        </div>
+        {tfidfData.length > 0 ? (
+          <div className="word-cloud">
+            <TagCloud
+              minSize={16}
+              maxSize={50}
+              tags={tfidfData}
+              colorOptions={options}
+            />
+          </div>
+        ) : (
+          <p>No hay datos para mostrar</p>
+        )}
       </div>
     </div>
   );

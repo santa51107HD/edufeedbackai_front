@@ -3,7 +3,7 @@ import Rating from "@mui/material/Rating";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import "./commentsSummary.css";
 
-const CommentsSummary = ({ comments, typeUser }) => {
+const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, analisisComentarios }) => {
   const totalComments = comments.length;
 
   // Filtrar comentarios por género
@@ -48,18 +48,6 @@ const CommentsSummary = ({ comments, typeUser }) => {
   const averageRating = calculateAverageRating(comments);
   const averageMaleRating = calculateAverageRating(maleComments);
   const averageFemaleRating = calculateAverageRating(femaleComments);
-
-  // Ordenar los comentarios por calificación de manera descendente y ascendente
-  const sortedCommentsDescending = [...comments].sort(
-    (a, b) => b.comentario.calificacion - a.comentario.calificacion
-  );
-  const sortedCommentsAscending = [...comments].sort(
-    (a, b) => a.comentario.calificacion - b.comentario.calificacion
-  );
-
-  // Filtrar los 5 mejores y 5 peores comentarios
-  const bestComments = sortedCommentsDescending.slice(0, 5);
-  const worstComments = sortedCommentsAscending.slice(0, 5);
 
   // Determinar la clase CSS según el valor del rating
   const getRatingClass = (rating) =>
@@ -288,7 +276,7 @@ const CommentsSummary = ({ comments, typeUser }) => {
               </div>
             ))
           ) : (
-            <p>No hay comentarios positivos</p>
+            <p>No hay comentarios</p>
           )}
         </div>
 
@@ -307,10 +295,16 @@ const CommentsSummary = ({ comments, typeUser }) => {
               </div>
             ))
           ) : (
-            <p>No hay comentarios negativos</p>
+            <p>No hay comentarios</p>
           )}
         </div>
       </div>
+      {analisisComentarios && (
+        <div className="analisis-comentarios">
+          <h3>Análisis de la IA</h3>
+          <p>{analisisComentarios}</p>
+        </div>
+      )}
     </div>
   );
 };

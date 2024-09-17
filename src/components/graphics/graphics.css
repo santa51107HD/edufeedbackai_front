@@ -1,5 +1,4 @@
-/* graphics.css */
-.graphics-container {
+.barchart-container {
   overflow-x: auto; /* Habilitar el scroll horizontal */
   min-width: 300px; /* Tamaño mínimo para el contenedor */
   display: flex;
