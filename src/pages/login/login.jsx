@@ -45,8 +45,8 @@ const Login = () => {
       let typeUser = null;
       if (response.is_docente === true) {
         typeUser = "docente";
-      } else if (response.is_director_programa === true) {
-        typeUser = "director_programa";
+      } else if (response.is_director_escuela === true) {
+        typeUser = "director_escuela";
       } else if (response.is_daca === true) {
         typeUser = "daca";
       }

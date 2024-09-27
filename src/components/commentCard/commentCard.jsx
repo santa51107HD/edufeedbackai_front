@@ -24,7 +24,7 @@ const CommentCard = ({ comentario, docente, materia, grupo, semestre, anho }) =>
       <p><strong>Comentario:</strong> {texto}</p>
       {/* <p><strong>Calificación:</strong> {calificacion}</p> */}
       <p><strong>Usuario:</strong> {docente.usuario}</p>
-      {(appState.typeUser === 'daca' || appState.typeUser === 'director_programa') && (
+      {(appState.typeUser === 'daca' || appState.typeUser === 'director_escuela') && (
       <p><strong>Género Docente:</strong> {docente.genero}</p>
         )}
       <p><strong>Código Materia:</strong> {materia.codigo}</p>

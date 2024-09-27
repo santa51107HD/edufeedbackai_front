@@ -167,7 +167,7 @@ const CommentsFilter = ({ comments, typeUser }) => {
           getOptionLabel={(option) => (option ? option.toString() : "")}
           style={{ minWidth: 160 }}
         />
-        {(typeUser === "daca" || typeUser === "director_programa") && (
+        {(typeUser === "daca" || typeUser === "director_escuela") && (
           <>
             <Autocomplete
               options={uniqueCodigosDocente}

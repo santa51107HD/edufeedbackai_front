@@ -138,15 +138,15 @@ const Home = () => {
       const texto2 =
         "Quiero que analices la siguiente informacion y me des tu opinion sobre los comentarios positivos, neutrales y negativos por cada semestre que hicieron los estudiantes a su docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
       const texto3 =
-        "Quiero que analices la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un conjunto de docentes. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+        "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un conjunto de docentes. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
       const texto4 =
-        "Quiero que analices la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+        "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
 
       let textoSeleccionado1 = "";
       let textoSeleccionado2 = "";
 
       // Condicional para seleccionar el texto según el tipo de usuario
-      if (appState.typeUser === "daca" || appState.typeUser === "director_programa") {
+      if (appState.typeUser === "daca" || appState.typeUser === "director_escuela") {
         textoSeleccionado1 = texto1;
         textoSeleccionado2 = texto3;
       } else if (appState.typeUser === "docente") {
@@ -172,13 +172,14 @@ const Home = () => {
           },
         });
         const data = await response.json();
-        const transformedData = Object.entries(data).map(([value, count]) => ({
-          value,
-          count,
-        }));
-        setTfidfData(transformedData);
+
+        const tfidfGeneral = Object.entries(data.general).map(([value, count]) => ({ value, count }));
+        const tfidfHombres = Object.entries(data.hombres).map(([value, count]) => ({ value, count }));
+        const tfidfMujeres = Object.entries(data.mujeres).map(([value, count]) => ({ value, count }));
+
+        setTfidfData({ general: tfidfGeneral, hombres: tfidfHombres, mujeres: tfidfMujeres });
       } catch (error) {
-        console.error("Error:", error);
+        console.error("Error fetching TF-IDF data:", error);
       }
     };
 
@@ -229,6 +230,7 @@ const Home = () => {
           )}
           {currentTab === 1 && (
             <Graphics
+              typeUser={appState.typeUser}
               chartData={chartData}
               generatedText={generatedText}
               tfidfData={tfidfData}

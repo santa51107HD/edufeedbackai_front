@@ -3,7 +3,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 import { TagCloud } from "react-tagcloud";
 import "./graphics.css";
 
-const Graphics = ({ chartData, generatedText, tfidfData }) => {
+const Graphics = ({ typeUser, chartData, generatedText, tfidfData }) => {
   const options = {
     luminosity: "dark",
     hue: "blue",
@@ -46,20 +46,23 @@ const Graphics = ({ chartData, generatedText, tfidfData }) => {
       </div>
       {generatedText && (
         <div className="generated-text">
-          <h3>Opinión de la IA</h3>
+          <h3>Análisis del gráfico de barras por Gemini</h3>
           <p>{generatedText}</p>
         </div>
       )}
       <div className="cloud-container">
         <div>
-          <h2>Nube de Palabras</h2>
+          <h2>Nubes de Palabras</h2>
         </div>
-        {tfidfData.length > 0 ? (
+        <div>
+          <h3>General</h3>
+        </div>
+        {tfidfData.general.length > 0 ? (
           <div className="word-cloud">
             <TagCloud
               minSize={16}
               maxSize={50}
-              tags={tfidfData}
+              tags={tfidfData.general}
               colorOptions={options}
             />
           </div>
@@ -67,6 +70,44 @@ const Graphics = ({ chartData, generatedText, tfidfData }) => {
           <p>No hay datos para mostrar</p>
         )}
       </div>
+      {(typeUser === "daca" || typeUser === "director_escuela") && (
+        <div className="gender-cloud-container">
+          <div className="male-cloud-container">
+            <div className="gender-subtitle-graphics">
+              <h3>Hombres</h3>
+            </div>
+            {tfidfData.hombres.length > 0 ? (
+              <div className="word-cloud">
+                <TagCloud
+                  minSize={16}
+                  maxSize={50}
+                  tags={tfidfData.hombres}
+                  colorOptions={options}
+                />
+              </div>
+            ) : (
+              <p>No hay datos para mostrar</p>
+            )}
+          </div>
+          <div className="female-cloud-container">
+            <div className="gender-subtitle-graphics">
+              <h3>Mujeres</h3>
+            </div>
+            {tfidfData.mujeres.length > 0 ? (
+              <div className="word-cloud">
+                <TagCloud
+                  minSize={16}
+                  maxSize={50}
+                  tags={tfidfData.mujeres}
+                  colorOptions={options}
+                />
+              </div>
+            ) : (
+              <p>No hay datos para mostrar</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

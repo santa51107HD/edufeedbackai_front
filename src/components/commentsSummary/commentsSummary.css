@@ -12,11 +12,11 @@
   flex-direction: row;
   justify-content: center;
   padding: 20px;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   flex-wrap: wrap;
 }
 
-.second-comments-summary {
+.pie-chart-star-calification-container {
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -27,7 +27,7 @@
   flex-wrap: wrap;
 }
 
-.third-comments-summary{
+.comments-list-container{
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -70,7 +70,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #ffffff;
+  background-color: aliceblue;
   box-shadow: 0 0 5px;
   border-radius: 5px;
 }
@@ -108,6 +108,7 @@
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+  margin-bottom: 20px;
 }
 
 .male-stadistics-container{

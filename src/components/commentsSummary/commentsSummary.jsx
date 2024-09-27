@@ -3,7 +3,13 @@ import Rating from "@mui/material/Rating";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import "./commentsSummary.css";
 
-const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, analisisComentarios }) => {
+const CommentsSummary = ({
+  comments,
+  typeUser,
+  bestComments,
+  worstComments,
+  analisisComentarios,
+}) => {
   const totalComments = comments.length;
 
   // Filtrar comentarios por género
@@ -112,7 +118,7 @@ const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, anal
           <div>Negativos</div>
         </div>
       </div>
-      <div className="second-comments-summary">
+      <div className="pie-chart-star-calification-container">
         <div className="pie-chart-container">
           <div>Porcentaje por Polaridad</div>
           <PieChart
@@ -158,8 +164,52 @@ const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, anal
           </div>
         </div>
       </div>
-      {(typeUser === "daca" ||
-        typeUser === "director_programa") && (
+      <div className="comments-list-container">
+        {/* Mostrar los 5 mejores comentarios */}
+        <div className="comments-list-summary">
+          <h2 className="title-summary">Mejores Comentarios</h2>
+          {bestComments.length > 0 ? (
+            bestComments.map((comment, index) => (
+              <div key={index} className="comment-card-summary best-comment">
+                <p>{comment.comentario.comentario}</p>
+                <Rating
+                  name={`best-rating-${index}`}
+                  value={comment.comentario.calificacion}
+                  readOnly
+                />
+              </div>
+            ))
+          ) : (
+            <p>No hay comentarios</p>
+          )}
+        </div>
+
+        {/* Mostrar los 5 peores comentarios */}
+        <div className="comments-list-summary">
+          <h2 className="title-summary">Peores Comentarios</h2>
+          {worstComments.length > 0 ? (
+            worstComments.map((comment, index) => (
+              <div key={index} className="comment-card-summary worst-comment">
+                <p>{comment.comentario.comentario}</p>
+                <Rating
+                  name={`worst-rating-${index}`}
+                  value={comment.comentario.calificacion}
+                  readOnly
+                />
+              </div>
+            ))
+          ) : (
+            <p>No hay comentarios</p>
+          )}
+        </div>
+      </div>
+      {analisisComentarios && (
+        <div className="analisis-comentarios">
+          <h3>Análisis de los comentarios por Gemini</h3>
+          <p>{analisisComentarios}</p>
+        </div>
+      )}
+      {(typeUser === "daca" || typeUser === "director_escuela") && (
         <>
           <div className="gender-title-summary">
             <h2>Estadísticas por Género</h2>
@@ -169,7 +219,7 @@ const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, anal
               <div className="gender-subtitle-summary">
                 <h3>Hombres</h3>
               </div>
-              <div className="second-comments-summary">
+              <div className="pie-chart-star-calification-container">
                 {/* Gráfico de pastel y tarjeta de calificación para docentes hombres */}
                 <div className="pie-chart-container">
                   <div>Porcentaje por Polaridad</div>
@@ -214,7 +264,7 @@ const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, anal
               <div className="gender-subtitle-summary">
                 <h3>Mujeres</h3>
               </div>
-              <div className="second-comments-summary">
+              <div className="pie-chart-star-calification-container">
                 {/* Gráfico de pastel y tarjeta de calificación para docentes mujeres */}
                 <div className="pie-chart-container">
                   <div>Porcentaje por Polaridad</div>
@@ -259,51 +309,6 @@ const CommentsSummary = ({ comments, typeUser, bestComments, worstComments, anal
             </div>
           </div>
         </>
-      )}
-      <div className="third-comments-summary">
-        {/* Mostrar los 5 mejores comentarios */}
-        <div className="comments-list-summary">
-          <h2 className="title-summary">Mejores Comentarios</h2>
-          {bestComments.length > 0 ? (
-            bestComments.map((comment, index) => (
-              <div key={index} className="comment-card-summary best-comment">
-                <p>{comment.comentario.comentario}</p>
-                <Rating
-                  name={`best-rating-${index}`}
-                  value={comment.comentario.calificacion}
-                  readOnly
-                />
-              </div>
-            ))
-          ) : (
-            <p>No hay comentarios</p>
-          )}
-        </div>
-
-        {/* Mostrar los 5 peores comentarios */}
-        <div className="comments-list-summary">
-          <h2 className="title-summary">Peores Comentarios</h2>
-          {worstComments.length > 0 ? (
-            worstComments.map((comment, index) => (
-              <div key={index} className="comment-card-summary worst-comment">
-                <p>{comment.comentario.comentario}</p>
-                <Rating
-                  name={`worst-rating-${index}`}
-                  value={comment.comentario.calificacion}
-                  readOnly
-                />
-              </div>
-            ))
-          ) : (
-            <p>No hay comentarios</p>
-          )}
-        </div>
-      </div>
-      {analisisComentarios && (
-        <div className="analisis-comentarios">
-          <h3>Análisis de la IA</h3>
-          <p>{analisisComentarios}</p>
-        </div>
       )}
     </div>
   );
