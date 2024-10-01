@@ -20,14 +20,25 @@ const Home = () => {
     neutralSeries: [],
     negativeSeries: [],
   });
-  const [generatedText, setGeneratedText] = useState("");
+  const [analisisGraficoBarras, setAnalisisGraficoBarras] = useState("");
+  const [analisisComentariosGenerales, setAnalisisComentariosGenerales] =
+    useState("");
+  const [analisisComentariosGenero, setAnalisisComentariosGenero] =
+    useState("");
+  const [analisisTFIDFGenero, setAnalisisTFIDFGenero] =
+    useState("");
   const [tfidfData, setTfidfData] = useState([]);
   const [semestres, setSemestres] = useState({});
-  const [bestComments, setBestComments] = useState([]);
-  const [worstComments, setWorstComments] = useState([]);
-  const [combinedComments, setCombinedComments] = useState([]);
-  const [analisisComentarios, setAnalisisComentarios] = useState("");
+  const [combinedComments, setCombinedComments] = useState({
+    bestGeneralComments: [],
+    worstGeneralComments: [],
+    bestMaleComments: [],
+    worstMaleComments: [],
+    bestFemaleComments: [],
+    worstFemaleComments: [],
+  });
 
+  //Traer los comentarios del backend
   useEffect(() => {
     if (!appState.token) return;
 
@@ -43,6 +54,14 @@ const Home = () => {
         );
         const data = await response.json();
         setComments(data);
+
+        // Filtrar los comentarios por género
+        const maleComments = data.filter(
+          (comment) => comment.docente.genero === "male"
+        );
+        const femaleComments = data.filter(
+          (comment) => comment.docente.genero === "female"
+        );
 
         // Procesamiento de los datos para la grafica de barras
         const groupedData = data.reduce((acc, comment) => {
@@ -78,21 +97,35 @@ const Home = () => {
         setChartData({ labels, positiveSeries, neutralSeries, negativeSeries });
 
         // Ordenar los comentarios por calificación de manera descendente y ascendente
-        const sortedCommentsDescending = [...data].sort(
-          (a, b) => b.comentario.calificacion - a.comentario.calificacion
-        );
-        const sortedCommentsAscending = [...data].sort(
-          (a, b) => a.comentario.calificacion - b.comentario.calificacion
-        );
-
+        const sortByRatingDesc = (comments) =>
+          [...comments].sort(
+            (a, b) => b.comentario.calificacion - a.comentario.calificacion
+          );
+        const sortByRatingAsc = (comments) =>
+          [...comments].sort(
+            (a, b) => a.comentario.calificacion - b.comentario.calificacion
+          );
         // Filtrar los 5 mejores y 5 peores comentarios
-        const mejores = sortedCommentsDescending.slice(0, 5);
-        const peores = sortedCommentsAscending.slice(0, 5);
+        // Generales
+        const bestGeneralComments = sortByRatingDesc(data).slice(0, 5);
+        const worstGeneralComments = sortByRatingAsc(data).slice(0, 5);
 
-        setBestComments(mejores);
-        setWorstComments(peores);
+        // Hombres
+        const bestMaleComments = sortByRatingDesc(maleComments).slice(0, 5);
+        const worstMaleComments = sortByRatingAsc(maleComments).slice(0, 5);
 
-        setCombinedComments([...mejores, ...peores]);
+        // Mujeres
+        const bestFemaleComments = sortByRatingDesc(femaleComments).slice(0, 5);
+        const worstFemaleComments = sortByRatingAsc(femaleComments).slice(0, 5);
+
+        setCombinedComments({
+          bestGeneralComments,
+          worstGeneralComments,
+          bestMaleComments,
+          worstMaleComments,
+          bestFemaleComments,
+          worstFemaleComments,
+        });
       } catch (error) {
         console.error("Error fetching comments:", error);
       } finally {
@@ -103,7 +136,42 @@ const Home = () => {
     fetchComments();
   }, []);
 
-  // Nuevo useEffect para las peticiones al backend (IA y TF-IDF)
+  //Calcular el TF-IDF
+  useEffect(() => {
+    if (comments.length === 0) return; // Asegurarse de que hay comentarios antes de hacer las peticiones
+    const fetchTFIDF = async () => {
+      try {
+        const response = await fetch("http://127.0.0.1:8000/tfidf-data/", {
+          headers: {
+            Authorization: appState.token,
+          },
+        });
+        const data = await response.json();
+
+        const tfidfGeneral = Object.entries(data.general).map(
+          ([value, count]) => ({ value, count })
+        );
+        const tfidfHombres = Object.entries(data.hombres).map(
+          ([value, count]) => ({ value, count })
+        );
+        const tfidfMujeres = Object.entries(data.mujeres).map(
+          ([value, count]) => ({ value, count })
+        );
+
+        setTfidfData({
+          general: tfidfGeneral,
+          hombres: tfidfHombres,
+          mujeres: tfidfMujeres,
+        });
+      } catch (error) {
+        console.error("Error fetching TF-IDF data:", error);
+      }
+    };
+
+    fetchTFIDF();
+  }, [comments]);
+
+  // useEffect para la generacion de texto con Gemini
   useEffect(() => {
     if (comments.length === 0) return; // Asegurarse de que hay comentarios antes de hacer las peticiones
 
@@ -133,59 +201,92 @@ const Home = () => {
     };
 
     const fetchGeneratedTexts = async () => {
-      const texto1 =
+      const promptGraficoBarrasPlural =
         "Quiero que analices la siguiente informacion y me des tu opinion sobre los comentarios positivos, neutrales y negativos por cada semestre que hicieron los estudiantes a sus docentes. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
-      const texto2 =
+      const promptGraficoBarrasSingular =
         "Quiero que analices la siguiente informacion y me des tu opinion sobre los comentarios positivos, neutrales y negativos por cada semestre que hicieron los estudiantes a su docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
-      const texto3 =
+      const promptTopComentariosGeneralesPlural =
         "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un conjunto de docentes. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
-      const texto4 =
+      const promptTopComentariosGeneralesSingular =
         "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
 
-      let textoSeleccionado1 = "";
-      let textoSeleccionado2 = "";
+      let promptGraficoBarras = "";
+      let promptTopComentariosGenerales = "";
 
-      // Condicional para seleccionar el texto según el tipo de usuario
-      if (appState.typeUser === "daca" || appState.typeUser === "director_escuela") {
-        textoSeleccionado1 = texto1;
-        textoSeleccionado2 = texto3;
+      // Condicional para seleccionar el prompt según el tipo de usuario
+      if (
+        appState.typeUser === "daca" ||
+        appState.typeUser === "director_escuela"
+      ) {
+        promptGraficoBarras = promptGraficoBarrasPlural;
+        promptTopComentariosGenerales = promptTopComentariosGeneralesPlural;
+
+        const comentariosGenero = {
+          hombres: [
+            combinedComments.bestMaleComments,
+            combinedComments.worstMaleComments,
+          ],
+          mujeres: [
+            combinedComments.bestFemaleComments,
+            combinedComments.worstFemaleComments,
+          ],
+        };
+
+        const promptTopComentariosGenero =
+          "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un conjunto de docentes hombres y docentes mujeres y los compares por genero. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 3000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+
+        const promptTFIDFGenero =
+          "Quiero que analices la siguiente informacion que contiene las puntuaciones de TF-IDF de un conjunto de comentarios sobre docentes, la informacion esta dividida por genero y de forma general. Quiero que encuentres patrones, similitudes y diferencias. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 3000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+
+        const respuestaTopComentariosGenero = await sendCommentsToBackend(
+          comentariosGenero,
+          promptTopComentariosGenero
+        );
+        const respuestaTFIDFGenero = await sendCommentsToBackend(
+          tfidfData,
+          promptTFIDFGenero
+        );
+
+        console.log(
+          "Analisis Comentarios por Genero:",
+          respuestaTopComentariosGenero
+        );
+        console.log(
+          "Analisis TFIDF por Genero:",
+          respuestaTFIDFGenero
+        );
+        //console.log("TFIDF", tfidfData);
+        setAnalisisComentariosGenero(respuestaTopComentariosGenero);
+        setAnalisisTFIDFGenero(respuestaTFIDFGenero)
       } else if (appState.typeUser === "docente") {
-        textoSeleccionado1 = texto2;
-        textoSeleccionado2 = texto4;
+        promptGraficoBarras = promptGraficoBarrasSingular;
+        promptTopComentariosGenerales = promptTopComentariosGeneralesSingular;
       }
 
-      const resultado1 = await sendCommentsToBackend(semestres, textoSeleccionado1);
-      const resultado2 = await sendCommentsToBackend(combinedComments, textoSeleccionado2);
+      const respuestaGraficoBarras = await sendCommentsToBackend(
+        semestres,
+        promptGraficoBarras
+      );
+      const respuestaTopComentariosGenerales = await sendCommentsToBackend(
+        [
+          combinedComments.bestGeneralComments,
+          combinedComments.worstGeneralComments,
+        ],
+        promptTopComentariosGenerales
+      );
 
-      console.log("Primer análisis:", resultado1);
-      console.log("Segundo análisis:", resultado2);
+      console.log("Grafico análisis:", respuestaGraficoBarras);
+      console.log(
+        "Comentarios Generales análisis:",
+        respuestaTopComentariosGenerales
+      );
 
-      setGeneratedText(resultado1);
-      setAnalisisComentarios(resultado2);
-    };
-
-    const fetchTFIDF = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8000/tfidf-data/", {
-          headers: {
-            Authorization: appState.token,
-          },
-        });
-        const data = await response.json();
-
-        const tfidfGeneral = Object.entries(data.general).map(([value, count]) => ({ value, count }));
-        const tfidfHombres = Object.entries(data.hombres).map(([value, count]) => ({ value, count }));
-        const tfidfMujeres = Object.entries(data.mujeres).map(([value, count]) => ({ value, count }));
-
-        setTfidfData({ general: tfidfGeneral, hombres: tfidfHombres, mujeres: tfidfMujeres });
-      } catch (error) {
-        console.error("Error fetching TF-IDF data:", error);
-      }
+      setAnalisisGraficoBarras(respuestaGraficoBarras);
+      setAnalisisComentariosGenerales(respuestaTopComentariosGenerales);
     };
 
     fetchGeneratedTexts();
-    fetchTFIDF();
-  }, [comments]);
+  }, [tfidfData]);
 
   const handleTabChange = (event, newValue) => {
     setCurrentTab(newValue);
@@ -223,17 +324,18 @@ const Home = () => {
             <CommentsSummary
               comments={comments}
               typeUser={appState.typeUser}
-              bestComments={bestComments}
-              worstComments={worstComments}
-              analisisComentarios={analisisComentarios}
+              combinedComments={combinedComments}
+              analisisComentariosGenerales={analisisComentariosGenerales}
+              analisisComentariosGenero={analisisComentariosGenero}
             />
           )}
           {currentTab === 1 && (
             <Graphics
               typeUser={appState.typeUser}
               chartData={chartData}
-              generatedText={generatedText}
+              analisisGraficoBarras={analisisGraficoBarras}
               tfidfData={tfidfData}
+              analisisTFIDFGenero={analisisTFIDFGenero}
             />
           )}
           {currentTab === 2 && (

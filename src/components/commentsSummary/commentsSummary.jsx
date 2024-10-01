@@ -1,14 +1,15 @@
 import React from "react";
 import Rating from "@mui/material/Rating";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
+import GeneratedTextCard from "../generatedTextCard/generatedTextCard";
 import "./commentsSummary.css";
 
 const CommentsSummary = ({
   comments,
   typeUser,
-  bestComments,
-  worstComments,
-  analisisComentarios,
+  combinedComments,
+  analisisComentariosGenerales,
+  analisisComentariosGenero,
 }) => {
   const totalComments = comments.length;
 
@@ -168,8 +169,8 @@ const CommentsSummary = ({
         {/* Mostrar los 5 mejores comentarios */}
         <div className="comments-list-summary">
           <h2 className="title-summary">Mejores Comentarios</h2>
-          {bestComments.length > 0 ? (
-            bestComments.map((comment, index) => (
+          {combinedComments.bestGeneralComments.length > 0 ? (
+            combinedComments.bestGeneralComments.map((comment, index) => (
               <div key={index} className="comment-card-summary best-comment">
                 <p>{comment.comentario.comentario}</p>
                 <Rating
@@ -187,8 +188,8 @@ const CommentsSummary = ({
         {/* Mostrar los 5 peores comentarios */}
         <div className="comments-list-summary">
           <h2 className="title-summary">Peores Comentarios</h2>
-          {worstComments.length > 0 ? (
-            worstComments.map((comment, index) => (
+          {combinedComments.worstGeneralComments.length > 0 ? (
+            combinedComments.worstGeneralComments.map((comment, index) => (
               <div key={index} className="comment-card-summary worst-comment">
                 <p>{comment.comentario.comentario}</p>
                 <Rating
@@ -203,11 +204,11 @@ const CommentsSummary = ({
           )}
         </div>
       </div>
-      {analisisComentarios && (
-        <div className="analisis-comentarios">
-          <h3>Análisis de los comentarios por Gemini</h3>
-          <p>{analisisComentarios}</p>
-        </div>
+      {analisisComentariosGenerales && (
+        <GeneratedTextCard
+          tittle={"Análisis de los comentarios por Gemini"}
+          content={analisisComentariosGenerales}
+        />
       )}
       {(typeUser === "daca" || typeUser === "director_escuela") && (
         <>
@@ -259,6 +260,55 @@ const CommentsSummary = ({
                   </div>
                 </div>
               </div>
+              <div className="comments-list-container">
+                {/* Mostrar los 5 mejores comentarios de docentes Hombres*/}
+                <div className="comments-list-summary">
+                  <h4 className="gender-subtitle-summary">
+                    Mejores Comentarios
+                  </h4>
+                  {combinedComments.bestMaleComments.length > 0 ? (
+                    combinedComments.bestMaleComments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="comment-card-summary best-comment"
+                      >
+                        <p>{comment.comentario.comentario}</p>
+                        <Rating
+                          name={`best-rating-${index}`}
+                          value={comment.comentario.calificacion}
+                          readOnly
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <p>No hay comentarios</p>
+                  )}
+                </div>
+
+                {/* Mostrar los 5 peores comentarios de docentes Hombres*/}
+                <div className="comments-list-summary">
+                  <h4 className="gender-subtitle-summary">
+                    Peores Comentarios
+                  </h4>
+                  {combinedComments.worstMaleComments.length > 0 ? (
+                    combinedComments.worstMaleComments.map((comment, index) => (
+                      <div
+                        key={index}
+                        className="comment-card-summary worst-comment"
+                      >
+                        <p>{comment.comentario.comentario}</p>
+                        <Rating
+                          name={`worst-rating-${index}`}
+                          value={comment.comentario.calificacion}
+                          readOnly
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <p>No hay comentarios</p>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="female-stadistics-container">
               <div className="gender-subtitle-summary">
@@ -306,8 +356,67 @@ const CommentsSummary = ({
                   </div>
                 </div>
               </div>
+              <div className="comments-list-container">
+                {/* Mostrar los 5 mejores comentarios de docentes Mujeres*/}
+                <div className="comments-list-summary">
+                  <h4 className="gender-subtitle-summary">
+                    Mejores Comentarios
+                  </h4>
+                  {combinedComments.bestFemaleComments.length > 0 ? (
+                    combinedComments.bestFemaleComments.map(
+                      (comment, index) => (
+                        <div
+                          key={index}
+                          className="comment-card-summary best-comment"
+                        >
+                          <p>{comment.comentario.comentario}</p>
+                          <Rating
+                            name={`best-rating-${index}`}
+                            value={comment.comentario.calificacion}
+                            readOnly
+                          />
+                        </div>
+                      )
+                    )
+                  ) : (
+                    <p>No hay comentarios</p>
+                  )}
+                </div>
+
+                {/* Mostrar los 5 peores comentarios de docentes Mujeres*/}
+                <div className="comments-list-summary">
+                  <h4 className="gender-subtitle-summary">
+                    Peores Comentarios
+                  </h4>
+                  {combinedComments.worstFemaleComments.length > 0 ? (
+                    combinedComments.worstFemaleComments.map(
+                      (comment, index) => (
+                        <div
+                          key={index}
+                          className="comment-card-summary worst-comment"
+                        >
+                          <p>{comment.comentario.comentario}</p>
+                          <Rating
+                            name={`worst-rating-${index}`}
+                            value={comment.comentario.calificacion}
+                            readOnly
+                          />
+                        </div>
+                      )
+                    )
+                  ) : (
+                    <p>No hay comentarios</p>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
+          {analisisComentariosGenero && (
+            <GeneratedTextCard
+              tittle={"Análisis de los comentarios para ambos géneros por Gemini"}
+              content={analisisComentariosGenero}
+            />
+          )}
         </>
       )}
     </div>

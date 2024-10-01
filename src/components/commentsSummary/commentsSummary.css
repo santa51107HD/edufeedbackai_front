@@ -113,14 +113,14 @@
 
 .male-stadistics-container{
   min-width: 340px;
-  width: 40%;
+  width: 50%;
   border-radius: 5px 5px 0px 0px;
   background-color: darkblue;
 }
 
 .female-stadistics-container{
   min-width: 340px;
-  width: 40%;
+  width: 50%;
   border-radius: 0px 0px 5px 5px;
   background-color: #ff758c;
 }
@@ -165,14 +165,6 @@
 .worst-comment {
   background-color: #5c1313;
   color: aliceblue;
-}
-
-.analisis-comentarios{
-  background-color: #00545f;
-  color: aliceblue;
-  margin: 20px;
-  padding: 20px;
-  border-radius: 5px;
 }
 
 @media (min-width: 695px) {
