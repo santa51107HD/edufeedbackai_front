@@ -281,7 +281,7 @@ const CommentsSummary = ({
                       </div>
                     ))
                   ) : (
-                    <p>No hay comentarios</p>
+                    <h5 className="no-comments-white">No hay comentarios</h5>
                   )}
                 </div>
 
@@ -305,7 +305,7 @@ const CommentsSummary = ({
                       </div>
                     ))
                   ) : (
-                    <p>No hay comentarios</p>
+                    <h5 className="no-comments-white">No hay comentarios</h5>
                   )}
                 </div>
               </div>
@@ -379,7 +379,7 @@ const CommentsSummary = ({
                       )
                     )
                   ) : (
-                    <p>No hay comentarios</p>
+                    <h5 className="no-comments-white">No hay comentarios</h5>
                   )}
                 </div>
 
@@ -405,7 +405,7 @@ const CommentsSummary = ({
                       )
                     )
                   ) : (
-                    <p>No hay comentarios</p>
+                    <h5 className="no-comments-white">No hay comentarios</h5>
                   )}
                 </div>
               </div>
@@ -413,7 +413,9 @@ const CommentsSummary = ({
           </div>
           {analisisComentariosGenero && (
             <GeneratedTextCard
-              tittle={"Análisis de los comentarios para ambos géneros por Gemini"}
+              tittle={
+                "Análisis de los comentarios para ambos géneros por Gemini"
+              }
               content={analisisComentariosGenero}
             />
           )}

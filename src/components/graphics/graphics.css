@@ -68,6 +68,10 @@
   color: aliceblue;
 }
 
+.no-data-white{
+  color: aliceblue;
+}
+
 @media (min-width: 695px) {
   .male-cloud-container{
     border-radius: 5px 0px 0px 5px;

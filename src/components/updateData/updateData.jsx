@@ -1,5 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../../context/context";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./updateData.css";
 
 function UpdateData() {
@@ -39,11 +41,14 @@ function UpdateData() {
 
       if (response.ok) {
         const data = await response.json();
+        toast.success("Archivo subido exitosamente.");
         console.log("File uploaded successfully", data);
       } else {
+        toast.error(`Error al subir archivo: ${response.statusText}`);
         console.error("Error uploading file", response.statusText);
       }
     } catch (error) {
+      toast.error("Error al subir archivo.");
       console.error("Error uploading file", error);
       setAppState((prevState) => ({
         ...prevState,
@@ -59,26 +64,34 @@ function UpdateData() {
   };
 
   return (
-    <form className="update-container" onSubmit={handleSubmit}>
-      <input
-        className="update-input"
-        type="file"
-        id="file"
-        onChange={handleFileChange}
-        accept=".xlsx"
-        disabled={appState.isUploading} // Deshabilitar el input si está subiendo el archivo
-      />
-      <label htmlFor="file"  className={`custom-file-button ${appState.isUploading ? "disabled" : ""}`} >
-        {file ? file.name : "Seleccionar archivo"}
-      </label>
-      <button
-        className="update-button"
-        type="submit"
-        disabled={appState.isUploading || !file}
-      >
-        {appState.isUploading ? "Actualizando..." : "Actualizar"}
-      </button>
-    </form>
+    <>
+      <form className="update-container" onSubmit={handleSubmit}>
+        <input
+          className="update-input"
+          type="file"
+          id="file"
+          onChange={handleFileChange}
+          accept=".xlsx"
+          disabled={appState.isUploading} // Deshabilitar el input si está subiendo el archivo
+        />
+        <label
+          htmlFor="file"
+          className={`custom-file-button ${
+            appState.isUploading ? "disabled" : ""
+          }`}
+        >
+          {file ? file.name : "Seleccionar archivo"}
+        </label>
+        <button
+          className="update-button"
+          type="submit"
+          disabled={appState.isUploading || !file}
+        >
+          {appState.isUploading ? "Actualizando..." : "Actualizar"}
+        </button>
+      </form>
+      <ToastContainer />
+    </>
   );
 }
 

@@ -25,8 +25,7 @@ const Home = () => {
     useState("");
   const [analisisComentariosGenero, setAnalisisComentariosGenero] =
     useState("");
-  const [analisisTFIDFGenero, setAnalisisTFIDFGenero] =
-    useState("");
+  const [analisisTFIDFGenero, setAnalisisTFIDFGenero] = useState("");
   const [tfidfData, setTfidfData] = useState([]);
   const [semestres, setSemestres] = useState({});
   const [combinedComments, setCombinedComments] = useState({
@@ -251,13 +250,10 @@ const Home = () => {
           "Analisis Comentarios por Genero:",
           respuestaTopComentariosGenero
         );
-        console.log(
-          "Analisis TFIDF por Genero:",
-          respuestaTFIDFGenero
-        );
+        console.log("Analisis TFIDF por Genero:", respuestaTFIDFGenero);
         //console.log("TFIDF", tfidfData);
         setAnalisisComentariosGenero(respuestaTopComentariosGenero);
-        setAnalisisTFIDFGenero(respuestaTFIDFGenero)
+        setAnalisisTFIDFGenero(respuestaTFIDFGenero);
       } else if (appState.typeUser === "docente") {
         promptGraficoBarras = promptGraficoBarrasSingular;
         promptTopComentariosGenerales = promptTopComentariosGeneralesSingular;
@@ -313,10 +309,12 @@ const Home = () => {
             scrollButtons
             allowScrollButtonsMobile
           >
-            <Tab label="Resumen" />
-            <Tab label="Gráficas" />
-            <Tab label="Comentarios" />
-            {appState.typeUser === "daca" && <Tab label="Cargar Datos" />}
+            <Tab label="Resumen" disabled={appState.isUploading} />
+            <Tab label="Gráficas" disabled={appState.isUploading} />
+            <Tab label="Comentarios" disabled={appState.isUploading} />
+            {appState.typeUser === "daca" && (
+              <Tab label="Cargar Datos" disabled={appState.isUploading} />
+            )}
           </Tabs>
         </div>
         <div>

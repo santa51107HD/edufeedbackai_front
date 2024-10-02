@@ -101,7 +101,7 @@ const Graphics = ({
                 />
               </div>
             ) : (
-              <p>No hay datos para mostrar</p>
+              <h5 className="no-data-white">No hay datos para mostrar</h5>
             )}
           </div>
           <div className="female-cloud-container">
@@ -118,7 +118,7 @@ const Graphics = ({
                 />
               </div>
             ) : (
-              <p>No hay datos para mostrar</p>
+              <h5 className="no-data-white">No hay datos para mostrar</h5>
             )}
           </div>
           {analisisTFIDFGenero && (
