@@ -28,6 +28,8 @@ const Home = () => {
   const [analisisTFIDFGenero, setAnalisisTFIDFGenero] = useState("");
   const [tfidfData, setTfidfData] = useState([]);
   const [semestres, setSemestres] = useState({});
+  const [maleComments, setMaleComments] = useState([]);
+  const [femaleComments, setFemaleComments] = useState([]);
   const [combinedComments, setCombinedComments] = useState({
     bestGeneralComments: [],
     worstGeneralComments: [],
@@ -61,6 +63,16 @@ const Home = () => {
         const femaleComments = data.filter(
           (comment) => comment.docente.genero === "female"
         );
+
+        // Obtener solo los comentarios de las evaluaciones y guardarlos
+        const onlyMaleComments = maleComments.map((comment) => comment.comentario.comentario);
+        const onlyFemaleComments = femaleComments.map((comment) => comment.comentario.comentario);
+
+        console.log("Cantidad de comentarios Hombres:",onlyMaleComments.length)
+        console.log("Cantidad de comentarios Mujeres:",onlyFemaleComments.length)
+
+        setMaleComments(onlyMaleComments);
+        setFemaleComments(onlyFemaleComments);
 
         // Procesamiento de los datos para la grafica de barras
         const groupedData = data.reduce((acc, comment) => {
@@ -133,7 +145,7 @@ const Home = () => {
     };
 
     fetchComments();
-  }, []);
+  }, [appState.token]);
 
   //Calcular el TF-IDF
   useEffect(() => {
@@ -205,9 +217,9 @@ const Home = () => {
       const promptGraficoBarrasSingular =
         "Quiero que analices la siguiente informacion y me des tu opinion sobre los comentarios positivos, neutrales y negativos por cada semestre que hicieron los estudiantes a su docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
       const promptTopComentariosGeneralesPlural =
-        "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un conjunto de docentes. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+        "Quiero que realices analisis topico a la siguiente informacion que contiene los comentarios que tiene un conjunto de docentes. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
       const promptTopComentariosGeneralesSingular =
-        "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+        "Quiero que realices analisis topico a la siguiente informacion que contiene los comentarios que tiene un docente. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 2000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
 
       let promptGraficoBarras = "";
       let promptTopComentariosGenerales = "";
@@ -222,20 +234,18 @@ const Home = () => {
 
         const comentariosGenero = {
           hombres: [
-            combinedComments.bestMaleComments,
-            combinedComments.worstMaleComments,
+            maleComments,
           ],
           mujeres: [
-            combinedComments.bestFemaleComments,
-            combinedComments.worstFemaleComments,
+            femaleComments,
           ],
         };
 
         const promptTopComentariosGenero =
-          "Quiero que realices analisis topico a la siguiente informacion que contiene los 5 mejores y los 5 peores comentarios que tiene un conjunto de docentes hombres y docentes mujeres y los compares por genero. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 3000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+          "Quiero que realices analisis topico a la siguiente informacion que contiene los comentarios que tiene un conjunto de docentes hombres y docentes mujeres y los compares por genero. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 3000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
 
         const promptTFIDFGenero =
-          "Quiero que analices la siguiente informacion que contiene las puntuaciones de TF-IDF de un conjunto de comentarios sobre docentes, la informacion esta dividida por genero y de forma general. Quiero que encuentres patrones, similitudes y diferencias. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 3000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
+          "Quiero que analices la siguiente informacion que contiene las puntuaciones de TF-IDF de un conjunto de comentarios sobre docentes, la informacion esta dividida por el genero del docente y de forma general. Quiero que encuentres patrones, similitudes y diferencias. Quiero que tu opinion sea resumida para no abrumar al usuario con mucha informacion. Puedes usar 3000 caracteres como maximo y toda la informacion debe estar en un solo parrafo";
 
         const respuestaTopComentariosGenero = await sendCommentsToBackend(
           comentariosGenero,
@@ -265,8 +275,8 @@ const Home = () => {
       );
       const respuestaTopComentariosGenerales = await sendCommentsToBackend(
         [
-          combinedComments.bestGeneralComments,
-          combinedComments.worstGeneralComments,
+          maleComments,
+          femaleComments,
         ],
         promptTopComentariosGenerales
       );

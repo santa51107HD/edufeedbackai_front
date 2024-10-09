@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { TagCloud } from "react-tagcloud";
 import GeneratedTextCard from "../generatedTextCard/generatedTextCard";
+import Skeleton from "@mui/material/Skeleton";
 import "./graphics.css";
 
 const Graphics = ({
@@ -51,11 +52,20 @@ const Graphics = ({
           className="barchart-custom"
         />
       </div>
-      {analisisGraficoBarras && (
+      {analisisGraficoBarras ? (
         <GeneratedTextCard
           tittle={"Análisis del gráfico de barras por Gemini"}
           content={analisisGraficoBarras}
         />
+      ) : (
+        <div className="skeleton-container-graphics">
+          <Skeleton
+            sx={{ bgcolor: "#00545f" }}
+            variant="rectangular"
+            width="80%"
+            height={60}
+          />
+        </div>
       )}
       <div className="cloud-container">
         {typeUser === "daca" || typeUser === "director_escuela" ? (
@@ -86,48 +96,59 @@ const Graphics = ({
         )}
       </div>
       {(typeUser === "daca" || typeUser === "director_escuela") && (
-        <div className="gender-cloud-container">
-          <div className="male-cloud-container">
-            <div className="gender-subtitle-graphics">
-              <h3>Hombres</h3>
-            </div>
-            {tfidfData?.hombres && tfidfData.hombres.length > 0 ? (
-              <div className="word-cloud">
-                <TagCloud
-                  minSize={16}
-                  maxSize={50}
-                  tags={tfidfData.hombres}
-                  colorOptions={options}
-                />
+        <>
+          <div className="gender-cloud-container">
+            <div className="male-cloud-container">
+              <div className="gender-subtitle-graphics">
+                <h3>Hombres</h3>
               </div>
-            ) : (
-              <h5 className="no-data-white">No hay datos para mostrar</h5>
-            )}
-          </div>
-          <div className="female-cloud-container">
-            <div className="gender-subtitle-graphics">
-              <h3>Mujeres</h3>
+              {tfidfData?.hombres && tfidfData.hombres.length > 0 ? (
+                <div className="word-cloud">
+                  <TagCloud
+                    minSize={16}
+                    maxSize={50}
+                    tags={tfidfData.hombres}
+                    colorOptions={options}
+                  />
+                </div>
+              ) : (
+                <h5 className="no-data-white">No hay datos para mostrar</h5>
+              )}
             </div>
-            {tfidfData?.mujeres && tfidfData.mujeres.length > 0 ? (
-              <div className="word-cloud">
-                <TagCloud
-                  minSize={16}
-                  maxSize={50}
-                  tags={tfidfData.mujeres}
-                  colorOptions={options}
-                />
+            <div className="female-cloud-container">
+              <div className="gender-subtitle-graphics">
+                <h3>Mujeres</h3>
               </div>
-            ) : (
-              <h5 className="no-data-white">No hay datos para mostrar</h5>
-            )}
+              {tfidfData?.mujeres && tfidfData.mujeres.length > 0 ? (
+                <div className="word-cloud">
+                  <TagCloud
+                    minSize={16}
+                    maxSize={50}
+                    tags={tfidfData.mujeres}
+                    colorOptions={options}
+                  />
+                </div>
+              ) : (
+                <h5 className="no-data-white">No hay datos para mostrar</h5>
+              )}
+            </div>
           </div>
-          {analisisTFIDFGenero && (
-            <GeneratedTextCard
-              tittle={"Análisis de las nubes de palabras por Gemini"}
-              content={analisisTFIDFGenero}
-            />
+          {analisisTFIDFGenero ? (
+              <GeneratedTextCard
+                tittle={"Análisis de las nubes de palabras por Gemini"}
+                content={analisisTFIDFGenero}
+              />
+          ) : (
+            <div className="skeleton-container-graphics">
+              <Skeleton
+                sx={{ bgcolor: "#00545f" }}
+                variant="rectangular"
+                width="80%"
+                height={60}
+              />
+            </div>
           )}
-        </div>
+        </>
       )}
     </div>
   );
