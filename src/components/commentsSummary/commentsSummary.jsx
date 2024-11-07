@@ -2,7 +2,7 @@ import React from "react";
 import Rating from "@mui/material/Rating";
 import { PieChart, pieArcLabelClasses } from "@mui/x-charts/PieChart";
 import GeneratedTextCard from "../generatedTextCard/generatedTextCard";
-import Skeleton from '@mui/material/Skeleton';
+import Skeleton from "@mui/material/Skeleton";
 import "./commentsSummary.css";
 
 const CommentsSummary = ({
@@ -210,15 +210,15 @@ const CommentsSummary = ({
           tittle={"Análisis de los comentarios por Gemini"}
           content={analisisComentariosGenerales}
         />
-      ):(
+      ) : (
         <div className="skeleton-container-summary">
-        <Skeleton
-          sx={{ bgcolor: "#00545f" }}
-          variant="rectangular"
-          width="80%"
-          height={60}
-        />
-      </div>
+          <Skeleton
+            sx={{ bgcolor: "#00545f" }}
+            variant="rectangular"
+            width="80%"
+            height={60}
+          />
+        </div>
       )}
       {(typeUser === "daca" || typeUser === "director_escuela") && (
         <>
@@ -428,7 +428,7 @@ const CommentsSummary = ({
               }
               content={analisisComentariosGenero}
             />
-          ):(
+          ) : (
             <div className="skeleton-container-summary">
               <Skeleton
                 sx={{ bgcolor: "#00545f" }}
