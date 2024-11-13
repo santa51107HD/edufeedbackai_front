@@ -14,10 +14,10 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (appState.loggedIn) {
-      navigate('/'); // Redirige a la pagina principal si el usuario ya esta logeado
+    if (appState.loggedIn && window.location.pathname !== '/') {// Evitar que se redirija infinitamente si esta logeado
+      navigate('/'); // Redirige a la página principal solo si no estás ya en ella
     }
-  }, [appState, navigate]);
+  }, [appState.loggedIn, navigate]);
 
   const consultaUsuarioBD = async (datos) => {
     const data = await fetch("http://127.0.0.1:8000/login/", datos);
@@ -45,8 +45,8 @@ const Login = () => {
       let typeUser = null;
       if (response.is_docente === true) {
         typeUser = "docente";
-      } else if (response.is_director_programa === true) {
-        typeUser = "director_programa";
+      } else if (response.is_director_escuela === true) {
+        typeUser = "director_escuela";
       } else if (response.is_daca === true) {
         typeUser = "daca";
       }
@@ -72,7 +72,7 @@ const Login = () => {
         <h1>EduFeedbackAI</h1>
         <h2>Inicio de Sesión</h2>
         <div className="input-group">
-          <label htmlFor="code">Código:</label>
+          <label htmlFor="code">Usuario:</label>
           <input
             type="text"
             id="code"
@@ -92,7 +92,7 @@ const Login = () => {
           />
         </div>
         {error && <p className="login-alert">Credenciales incorrectas, por favor intente de nuevo.</p>}
-        <button type="submit" onClick={login}>Iniciar Sesión</button>
+        <button className="login-button" type="submit" onClick={login}>Iniciar Sesión</button>
       </form>
     </div>
   );

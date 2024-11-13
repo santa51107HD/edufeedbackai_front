@@ -1,0 +1,89 @@
+.barchart-container {
+  overflow-x: auto; /* Habilitar el scroll horizontal */
+  min-width: 300px; /* Tamaño mínimo para el contenedor */
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+
+.graphics-title{
+  display: flex;
+  justify-content: center;
+}
+
+.barchart-custom {
+  min-width: 600px;
+}
+
+.cloud-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.word-cloud{
+  max-width: 80%;
+  min-width: 300px;
+  box-shadow: 0 0 5px;
+  border-radius: 5px;
+  background-color: aliceblue;
+  margin-bottom: 20px;
+}
+
+.gender-cloud-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.male-cloud-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 340px;
+  width: 40%;
+  border-radius: 5px 5px 0px 0px;
+  background-color: darkblue;
+}
+
+.female-cloud-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 340px;
+  width: 40%;
+  border-radius: 0px 0px 5px 5px;
+  background-color: #ff758c;
+}
+
+.gender-subtitle-graphics {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: aliceblue;
+}
+
+.no-data-white{
+  color: aliceblue;
+}
+
+.skeleton-container-graphics{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+@media (min-width: 695px) {
+  .male-cloud-container{
+    border-radius: 5px 0px 0px 5px;
+  }
+  .female-cloud-container{
+    border-radius: 0px 5px 5px 0px;
+  }
+}

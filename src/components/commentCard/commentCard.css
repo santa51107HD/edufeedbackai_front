@@ -1,0 +1,11 @@
+.comment-card {
+    color: aliceblue;
+    border: 1px solid aliceblue;
+    border-radius: 5px;
+    padding: 15px;
+    font-size: large;
+    width: 30%;
+    min-width: 300px;
+    flex-grow: 1;
+  }
+  

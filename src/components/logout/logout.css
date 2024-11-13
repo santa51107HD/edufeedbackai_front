@@ -1,0 +1,7 @@
+.logout-button {
+    color: aliceblue;
+  }
+  
+.logout-button:hover {
+    color: #000000;
+  }

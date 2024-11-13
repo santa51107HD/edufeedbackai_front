@@ -10,6 +10,7 @@ export default function ContextProvider({ children }) {
       typeUser: "",
       name: "",
       token: "",
+      isUploading: false,
     };
   });
 

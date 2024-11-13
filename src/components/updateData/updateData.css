@@ -1,0 +1,38 @@
+.update-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.update-input {
+  display: none;
+}
+
+.custom-file-button {
+  background-color: #ff0000;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  margin: 20px;
+}
+
+.custom-file-button.disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }
+
+.update-button {
+  background-color: #ff0000;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.update-button:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+  }

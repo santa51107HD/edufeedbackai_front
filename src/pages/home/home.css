@@ -1,4 +1,36 @@
-.home{
-    color: aliceblue;
-    padding: 20px;
+.home {
+  color: black;
+  padding: 20px;
+}
+
+.main-content-home {
+  margin-top: 60px;
+}
+
+.tabs-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.tabs-container .MuiTabs-scrollButtons {
+  color: black;
+
+  &.Mui-disabled {
+    opacity: 0.3;
+  }
+}
+
+.tabs .MuiTab-root {
+  /* color: aliceblue; */
+  /* background-color: #1a1a1a; */
+  background-color: #e7e7e7;
+
+  &.Mui-selected {
+    color: black;
+  }
+}
+
+.tabs .MuiTabs-indicator {
+  background-color: #ff0000;
 }
