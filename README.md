@@ -41,7 +41,7 @@ Este repositorio contiene el frontend de la tesis, desarrollado con Vite y React
 1. Para importar nuevas evaluaciones, es necesario iniciar sesión con una cuenta de superusuario.
 2. Los usuarios correspondientes a docentes y directores de Escuela se crean automáticamente al realizar la importación de evaluaciones.
 3. Las contraseñas de los usuarios docentes y directores de Escuela son idénticas a su nombre de usuario.
-4. Los nombres de usuario de los docentes son números secuenciales, desde el 1 hasta el número máximo de usuarios docentes registrados. En caso de realizar la modificación de la "CEDULA" en el backend, los nombres de los usuarios docentes ya no serán secuenciales, pero sus contraseñas seguirán siendo idénticas a su nombre de usuario, que en este caso es el número de la cédula.
+4. El nombre de usuario de los usuarios docentes es su cédula.
 5. A continuación se presenta la lista de Escuelas de la Facultad de Ingeniería junto con el nombre de usuario asignado a cada director de Escuela para acceder a la aplicación:
     - QUÍMICA: dquimica
     - DE RECURSOS NATURALES Y DEL AMBIENTE: dambiente
